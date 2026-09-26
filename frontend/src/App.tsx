@@ -6,6 +6,8 @@ import { BrandsShowcase } from './components/BrandsShowcase';
 import { HowItWorks } from './components/HowItWorks';
 import { FeaturedDealHighlight } from './components/FeaturedDealHighlight';
 import { DealListingSection } from './components/DealListingSection';
+import { SavingsCalculator } from './components/SavingsCalculator';
+import { DealDetailsModal } from './components/DealDetailsModal';
 import { ComparisonSection } from './components/ComparisonSection';
 import { MembershipSection } from './components/MembershipSection';
 import { MemberPerksGrid } from './components/MemberPerksGrid';
@@ -19,6 +21,8 @@ import type { Deal, Brand } from './data/mockData';
 export function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [selectedDeal, setSelectedDeal] = useState<Deal | null>(null);
+  const [isDealDetailsOpen, setIsDealDetailsOpen] = useState(false);
   const [savedDeals, setSavedDeals] = useState<string[]>(['campus-north-plus', 'rare-rabbit-oxford']);
   const [selectedBrandFilter, setSelectedBrandFilter] = useState<string>('All');
   const [notification, setNotification] = useState<string | null>(null);
@@ -49,7 +53,8 @@ export function App() {
   };
 
   const handleSelectDeal = (deal: Deal) => {
-    showToast(`Viewing ${deal.title} — Save ₹${deal.savings.toLocaleString('en-IN')}`);
+    setSelectedDeal(deal);
+    setIsDealDetailsOpen(true);
   };
 
   const handleSelectBrand = (brand: Brand) => {
@@ -59,6 +64,10 @@ export function App() {
       dealsEl.scrollIntoView({ behavior: 'smooth' });
     }
     showToast(`Filtered deals by ${brand.name} (${brand.maxDiscount})`);
+  };
+
+  const handleRedeemDeal = (deal: Deal) => {
+    showToast(`Redeeming ${deal.title} — Member code ${deal.couponCode}`);
   };
 
   const handleOpenLegal = (title: string) => {
@@ -137,6 +146,9 @@ export function App() {
           initialBrand={selectedBrandFilter}
         />
 
+        {/* UX IMPROVEMENT 1: Savings and Value Calculator */}
+        <SavingsCalculator onUnlockMember={handleUnlockMember} />
+
         <ComparisonSection />
 
         <MembershipSection
@@ -162,6 +174,16 @@ export function App() {
         isOpen={isLoginModalOpen}
         onClose={() => setIsLoginModalOpen(false)}
         onSuccessLogin={handleSuccessLogin}
+      />
+
+      {/* UX IMPROVEMENTS 2, 4: Improved Deal Details Modal with Savings-First & Freshness */}
+      <DealDetailsModal
+        deal={selectedDeal}
+        isOpen={isDealDetailsOpen}
+        onClose={() => setIsDealDetailsOpen(false)}
+        onRedeem={handleRedeemDeal}
+        isSaved={selectedDeal ? savedDeals.includes(selectedDeal.id) : false}
+        onToggleSave={handleToggleSave}
       />
     </div>
   );

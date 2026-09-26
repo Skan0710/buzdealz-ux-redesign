@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heart, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Heart, ArrowRight, CheckCircle2, Clock, Sparkles } from 'lucide-react';
 import type { Deal } from '../data/mockData';
 
 interface DealCardProps {
@@ -21,7 +21,7 @@ export const DealCard: React.FC<DealCardProps> = ({
       style={{
         backgroundColor: 'var(--card)',
         border: '1px solid var(--border)',
-        borderRadius: '20px',
+        borderRadius: '22px',
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
@@ -33,7 +33,7 @@ export const DealCard: React.FC<DealCardProps> = ({
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = 'translateY(-4px)';
         e.currentTarget.style.boxShadow = 'var(--shadow-lg)';
-        e.currentTarget.style.borderColor = 'rgba(214, 51, 108, 0.35)';
+        e.currentTarget.style.borderColor = 'rgba(214, 51, 108, 0.4)';
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = 'translateY(0)';
@@ -46,7 +46,7 @@ export const DealCard: React.FC<DealCardProps> = ({
         style={{
           position: 'relative',
           height: '220px',
-          backgroundColor: '#f3f4f6',
+          backgroundColor: '#1f2937',
           overflow: 'hidden',
         }}
       >
@@ -94,22 +94,24 @@ export const DealCard: React.FC<DealCardProps> = ({
             BuzDealz Exclusive
           </span>
 
+          {/* Freshness & Trust Pill */}
           <span
             style={{
-              backgroundColor: 'rgba(35, 178, 127, 0.92)',
-              color: '#ffffff',
+              backgroundColor: 'rgba(255, 255, 255, 0.92)',
+              color: 'var(--sage-text)',
+              border: '1px solid rgba(35, 178, 127, 0.35)',
               padding: '2px 8px',
               borderRadius: '6px',
               fontSize: '0.68rem',
               fontWeight: 700,
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '3px',
-              width: 'fit-content',
+              gap: '4px',
+              backdropFilter: 'blur(4px)',
             }}
           >
-            <CheckCircle2 size={10} />
-            Verified Deal
+            <CheckCircle2 size={11} color="var(--sage)" />
+            <span>✓ Verified {deal.verifiedAgo}</span>
           </span>
         </div>
 
@@ -127,7 +129,7 @@ export const DealCard: React.FC<DealCardProps> = ({
             width: '34px',
             height: '34px',
             borderRadius: '50%',
-            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            backgroundColor: 'rgba(255, 255, 255, 0.92)',
             backdropFilter: 'blur(4px)',
             display: 'flex',
             alignItems: 'center',
@@ -143,45 +145,63 @@ export const DealCard: React.FC<DealCardProps> = ({
           <Heart size={16} fill={isSaved ? 'var(--primary)' : 'none'} />
         </button>
 
-        {/* Brand Tag Pill on Bottom Left of Image */}
+        {/* Brand Tag & Expiry Status Bar */}
         <div
           style={{
             position: 'absolute',
             bottom: '10px',
             left: '12px',
-            backgroundColor: 'rgba(255, 255, 255, 0.92)',
-            backdropFilter: 'blur(4px)',
-            borderRadius: 'var(--radius-pill)',
-            padding: '3px 10px',
+            right: '12px',
             display: 'flex',
             alignItems: 'center',
-            gap: '6px',
-            boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+            justifyContent: 'space-between',
             zIndex: 2,
           }}
         >
-          <span
+          <div
             style={{
+              backgroundColor: 'rgba(255, 255, 255, 0.94)',
+              backdropFilter: 'blur(4px)',
+              borderRadius: 'var(--radius-pill)',
+              padding: '3px 10px',
               fontSize: '0.75rem',
               fontWeight: 800,
               color: 'var(--foreground-heading)',
-              letterSpacing: '0.02em',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
             }}
           >
             {deal.brand}
-          </span>
+          </div>
+
+          <div
+            style={{
+              backgroundColor: deal.isEndingSoon ? 'rgba(225, 29, 72, 0.92)' : 'rgba(17, 24, 39, 0.82)',
+              color: '#ffffff',
+              borderRadius: 'var(--radius-pill)',
+              padding: '3px 8px',
+              fontSize: '0.7rem',
+              fontWeight: 600,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              backdropFilter: 'blur(4px)',
+            }}
+          >
+            <Clock size={11} />
+            <span>{deal.expiresIn}</span>
+          </div>
         </div>
       </div>
 
-      {/* Card Content */}
+      {/* Card Content with Savings-First Hierarchy */}
       <div style={{ padding: '16px 18px', display: 'flex', flexDirection: 'column', flex: 1 }}>
         <h4
           style={{
-            fontSize: '1rem',
+            fontSize: '0.98rem',
             fontWeight: 700,
             color: 'var(--foreground-heading)',
             lineHeight: 1.35,
-            marginBottom: '10px',
+            marginBottom: '12px',
             display: '-webkit-box',
             WebkitLineClamp: 2,
             WebkitBoxOrient: 'vertical',
@@ -193,46 +213,75 @@ export const DealCard: React.FC<DealCardProps> = ({
           {deal.title}
         </h4>
 
-        {/* Pricing Layout */}
-        <div style={{ marginTop: 'auto', paddingTop: '10px', borderTop: '1px solid var(--border-light)' }}>
-          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: '8px' }}>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-              <span
-                style={{
-                  fontSize: '1.25rem',
-                  fontWeight: 900,
-                  color: 'var(--primary)',
-                  letterSpacing: '-0.02em',
-                }}
-              >
-                ₹{deal.buzdealzPrice.toLocaleString('en-IN')}
-              </span>
-              <span
-                style={{
-                  fontSize: '0.84rem',
-                  color: 'var(--muted-foreground)',
-                  textDecoration: 'line-through',
-                }}
-              >
-                ₹{deal.brandPrice.toLocaleString('en-IN')}
-              </span>
-            </div>
+        {/* Price Breakdown */}
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '10px' }}>
+          <span
+            style={{
+              fontSize: '0.86rem',
+              color: 'var(--muted-foreground)',
+              textDecoration: 'line-through',
+            }}
+          >
+            ₹{deal.brandPrice.toLocaleString('en-IN')}
+          </span>
+          <span
+            style={{
+              fontSize: '1.35rem',
+              fontWeight: 800,
+              color: 'var(--foreground-heading)',
+              letterSpacing: '-0.02em',
+            }}
+          >
+            ₹{deal.buzdealzPrice.toLocaleString('en-IN')}
+          </span>
+          <span
+            style={{
+              marginLeft: 'auto',
+              fontSize: '0.78rem',
+              fontWeight: 800,
+              color: 'var(--sage-text)',
+              backgroundColor: 'var(--sage-bg)',
+              padding: '2px 8px',
+              borderRadius: '6px',
+            }}
+          >
+            {deal.discountPercent}% OFF
+          </span>
+        </div>
 
-            <span
-              style={{
-                fontSize: '0.78rem',
-                fontWeight: 800,
-                color: 'var(--sage-text)',
-                backgroundColor: 'var(--sage-bg)',
-                padding: '2px 8px',
-                borderRadius: '6px',
-              }}
-            >
-              {deal.discountPercent}% OFF
-            </span>
-          </div>
+        {/* UX IMPROVEMENT 4: Prominent "YOU SAVE ₹X" Highlight Banner */}
+        <div
+          style={{
+            backgroundColor: '#fff0f5',
+            border: '1px solid rgba(214, 51, 108, 0.25)',
+            borderRadius: '10px',
+            padding: '7px 10px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: '14px',
+          }}
+        >
+          <span
+            style={{
+              fontSize: '0.8rem',
+              fontWeight: 800,
+              color: 'var(--primary)',
+              letterSpacing: '0.04em',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+            }}
+          >
+            <Sparkles size={12} /> YOU SAVE ₹{deal.savings.toLocaleString('en-IN')}
+          </span>
+          <span style={{ fontSize: '0.72rem', color: '#8b1e47', fontWeight: 600 }}>
+            Member Exclusive
+          </span>
+        </div>
 
-          {/* Action button */}
+        {/* Action Button */}
+        <div style={{ marginTop: 'auto' }}>
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -241,17 +290,16 @@ export const DealCard: React.FC<DealCardProps> = ({
             className="btn-primary"
             style={{
               width: '100%',
-              padding: '9px 14px',
-              fontSize: '0.86rem',
-              borderRadius: '10px',
-              marginTop: '4px',
+              padding: '10px 14px',
+              fontSize: '0.88rem',
+              borderRadius: '12px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               gap: '6px',
             }}
           >
-            <span>View Deal Offer</span>
+            <span>Unlock Deal</span>
             <ArrowRight size={14} />
           </button>
         </div>
