@@ -5,6 +5,7 @@ import { StatsBar } from './components/StatsBar';
 import { BrandsShowcase } from './components/BrandsShowcase';
 import { HowItWorks } from './components/HowItWorks';
 import { FeaturedDealHighlight } from './components/FeaturedDealHighlight';
+import { DealListingSection } from './components/DealListingSection';
 import { ComparisonSection } from './components/ComparisonSection';
 import { MembershipSection } from './components/MembershipSection';
 import { MemberPerksGrid } from './components/MemberPerksGrid';
@@ -18,7 +19,8 @@ import type { Deal, Brand } from './data/mockData';
 export function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [savedDeals] = useState<string[]>(['campus-north-plus']);
+  const [savedDeals, setSavedDeals] = useState<string[]>(['campus-north-plus', 'rare-rabbit-oxford']);
+  const [selectedBrandFilter, setSelectedBrandFilter] = useState<string>('All');
   const [notification, setNotification] = useState<string | null>(null);
 
   const showToast = (msg: string) => {
@@ -36,11 +38,26 @@ export function App() {
     showToast('🎉 Welcome to BuzDealz Club! Exclusive member prices unlocked.');
   };
 
+  const handleToggleSave = (dealId: string) => {
+    if (savedDeals.includes(dealId)) {
+      setSavedDeals(savedDeals.filter((id) => id !== dealId));
+      showToast('Removed from saved deals');
+    } else {
+      setSavedDeals([...savedDeals, dealId]);
+      showToast('❤️ Added to your saved deals');
+    }
+  };
+
   const handleSelectDeal = (deal: Deal) => {
     showToast(`Viewing ${deal.title} — Save ₹${deal.savings.toLocaleString('en-IN')}`);
   };
 
   const handleSelectBrand = (brand: Brand) => {
+    setSelectedBrandFilter(brand.name);
+    const dealsEl = document.getElementById('deals');
+    if (dealsEl) {
+      dealsEl.scrollIntoView({ behavior: 'smooth' });
+    }
     showToast(`Filtered deals by ${brand.name} (${brand.maxDiscount})`);
   };
 
@@ -89,7 +106,7 @@ export function App() {
         <HeroSection
           onUnlockMember={handleUnlockMember}
           onExploreDeals={() => {
-            const el = document.getElementById('why-buzdealz');
+            const el = document.getElementById('deals');
             if (el) el.scrollIntoView({ behavior: 'smooth' });
           }}
         />
@@ -98,7 +115,11 @@ export function App() {
 
         <BrandsShowcase
           onSelectBrand={handleSelectBrand}
-          onViewAllBrands={() => setIsLoginModalOpen(true)}
+          onViewAllBrands={() => {
+            setSelectedBrandFilter('All');
+            const el = document.getElementById('deals');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }}
         />
 
         <HowItWorks />
@@ -106,6 +127,14 @@ export function App() {
         <FeaturedDealHighlight
           onSelectDeal={handleSelectDeal}
           onUnlockMember={handleUnlockMember}
+        />
+
+        {/* High-Fidelity Deal Discovery & Listing Section */}
+        <DealListingSection
+          onSelectDeal={handleSelectDeal}
+          savedDeals={savedDeals}
+          onToggleSave={handleToggleSave}
+          initialBrand={selectedBrandFilter}
         />
 
         <ComparisonSection />
