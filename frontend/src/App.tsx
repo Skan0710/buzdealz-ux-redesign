@@ -5,9 +5,11 @@ import { StatsBar } from './components/StatsBar';
 import { BrandsShowcase } from './components/BrandsShowcase';
 import { HowItWorks } from './components/HowItWorks';
 import { FeaturedDealHighlight } from './components/FeaturedDealHighlight';
+import { IntentDiscoverySection } from './components/IntentDiscoverySection';
 import { DealListingSection } from './components/DealListingSection';
 import { SavingsCalculator } from './components/SavingsCalculator';
 import { DealDetailsModal } from './components/DealDetailsModal';
+import { RedemptionHandoffModal } from './components/RedemptionHandoffModal';
 import { ComparisonSection } from './components/ComparisonSection';
 import { MembershipSection } from './components/MembershipSection';
 import { MemberPerksGrid } from './components/MemberPerksGrid';
@@ -23,6 +25,7 @@ export function App() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [selectedDeal, setSelectedDeal] = useState<Deal | null>(null);
   const [isDealDetailsOpen, setIsDealDetailsOpen] = useState(false);
+  const [isRedemptionOpen, setIsRedemptionOpen] = useState(false);
   const [savedDeals, setSavedDeals] = useState<string[]>(['campus-north-plus', 'rare-rabbit-oxford']);
   const [selectedBrandFilter, setSelectedBrandFilter] = useState<string>('All');
   const [notification, setNotification] = useState<string | null>(null);
@@ -66,12 +69,19 @@ export function App() {
     showToast(`Filtered deals by ${brand.name} (${brand.maxDiscount})`);
   };
 
-  const handleRedeemDeal = (deal: Deal) => {
-    showToast(`Redeeming ${deal.title} — Member code ${deal.couponCode}`);
+  const handleStartRedemption = (deal: Deal) => {
+    setSelectedDeal(deal);
+    setIsDealDetailsOpen(false);
+    setIsRedemptionOpen(true);
   };
 
   const handleOpenLegal = (title: string) => {
     showToast(`Opening ${title}`);
+  };
+
+  const scrollToIntentDiscovery = () => {
+    const el = document.getElementById('intent-discovery');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -108,6 +118,7 @@ export function App() {
         setActiveTab={setActiveTab}
         savedDealsCount={savedDeals.length}
         onOpenLoginModal={() => setIsLoginModalOpen(true)}
+        onOpenIntentDiscovery={scrollToIntentDiscovery}
       />
 
       {/* Main Content */}
@@ -129,6 +140,13 @@ export function App() {
             const el = document.getElementById('deals');
             if (el) el.scrollIntoView({ behavior: 'smooth' });
           }}
+        />
+
+        {/* UX IMPROVEMENT 3: Intent-Based Discovery */}
+        <IntentDiscoverySection
+          onSelectDeal={handleSelectDeal}
+          savedDeals={savedDeals}
+          onToggleSave={handleToggleSave}
         />
 
         <HowItWorks />
@@ -176,14 +194,22 @@ export function App() {
         onSuccessLogin={handleSuccessLogin}
       />
 
-      {/* UX IMPROVEMENTS 2, 4: Improved Deal Details Modal with Savings-First & Freshness */}
+      {/* UX IMPROVEMENTS 2, 4: Deal Details Modal with Savings-First & Freshness */}
       <DealDetailsModal
         deal={selectedDeal}
         isOpen={isDealDetailsOpen}
         onClose={() => setIsDealDetailsOpen(false)}
-        onRedeem={handleRedeemDeal}
+        onRedeem={handleStartRedemption}
         isSaved={selectedDeal ? savedDeals.includes(selectedDeal.id) : false}
         onToggleSave={handleToggleSave}
+      />
+
+      {/* UX IMPROVEMENT 5: Redemption Handoff Screen / Modal */}
+      <RedemptionHandoffModal
+        deal={selectedDeal}
+        isOpen={isRedemptionOpen}
+        onClose={() => setIsRedemptionOpen(false)}
+        onBackToDeal={() => setIsDealDetailsOpen(true)}
       />
     </div>
   );
