@@ -19,6 +19,7 @@ import { CtaBanner } from './components/CtaBanner';
 import { Footer } from './components/Footer';
 import { LoginModal } from './components/LoginModal';
 import { MobilePreLoginHome } from './components/MobilePreLoginHome';
+import { MobilePostLoginHome } from './components/MobilePostLoginHome';
 import { BRANDS, DEALS, type Deal, type Brand } from './data/mockData';
 
 export function App() {
@@ -146,22 +147,35 @@ export function App() {
 
       {/* Main Content */}
       <main style={{ flex: 1 }}>
-        {isMobile && !isLoggedIn ? (
-          <MobilePreLoginHome
-            brands={BRANDS}
-            deals={DEALS}
-            savedDeals={savedDeals}
-            onToggleSave={handleToggleSave}
-            onSelectDeal={handleSelectDeal}
-            onSelectBrand={handleSelectBrand}
-            onExploreDeals={() => {
-              setIsLoginModalOpen(true);
-            }}
-            onJoinBuzDealz={() => setIsLoginModalOpen(true)}
-            onSelectCategory={(cat) => {
-              showToast(`Browsing ${cat} deals`);
-            }}
-          />
+        {isMobile ? (
+          !isLoggedIn ? (
+            <MobilePreLoginHome
+              brands={BRANDS}
+              deals={DEALS}
+              savedDeals={savedDeals}
+              onToggleSave={handleToggleSave}
+              onSelectDeal={handleSelectDeal}
+              onSelectBrand={handleSelectBrand}
+              onExploreDeals={() => {
+                setIsLoginModalOpen(true);
+              }}
+              onJoinBuzDealz={() => setIsLoginModalOpen(true)}
+              onSelectCategory={(cat) => {
+                showToast(`Browsing ${cat} deals`);
+              }}
+            />
+          ) : (
+            <MobilePostLoginHome
+              userName={userName}
+              deals={DEALS}
+              brands={BRANDS}
+              savedDeals={savedDeals}
+              onToggleSave={handleToggleSave}
+              onSelectDeal={handleSelectDeal}
+              onSelectBrand={handleSelectBrand}
+              onOpenIntentDiscovery={scrollToIntentDiscovery}
+            />
+          )
         ) : (
           <>
             <HeroSection
