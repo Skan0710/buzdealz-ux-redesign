@@ -115,7 +115,7 @@ export const DealCard: React.FC<DealCardProps> = ({
           </span>
         </div>
 
-        {/* Wishlist Button */}
+        {/* Wishlist Button (Fitts's Law 44x44px touch target) */}
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -126,23 +126,26 @@ export const DealCard: React.FC<DealCardProps> = ({
             position: 'absolute',
             top: '12px',
             right: '12px',
-            width: '34px',
-            height: '34px',
+            width: '44px',
+            height: '44px',
+            minWidth: '44px',
+            minHeight: '44px',
             borderRadius: '50%',
-            backgroundColor: 'rgba(255, 255, 255, 0.92)',
+            backgroundColor: 'rgba(255, 255, 255, 0.94)',
             backdropFilter: 'blur(4px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             color: isSaved ? 'var(--primary)' : '#64748b',
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.12)',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.14)',
             zIndex: 2,
             transition: 'transform 0.15s ease',
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.1)')}
+          className="tap-feedback"
+          onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.08)')}
           onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
         >
-          <Heart size={16} fill={isSaved ? 'var(--primary)' : 'none'} />
+          <Heart size={18} fill={isSaved ? 'var(--primary)' : 'none'} />
         </button>
 
         {/* Brand Tag & Expiry Status Bar */}
@@ -287,10 +290,11 @@ export const DealCard: React.FC<DealCardProps> = ({
               e.stopPropagation();
               onSelectDeal(deal);
             }}
-            className="btn-primary"
+            className="btn-primary tap-feedback"
             style={{
               width: '100%',
-              padding: '10px 14px',
+              padding: '11px 16px',
+              minHeight: '44px',
               fontSize: '0.88rem',
               borderRadius: '12px',
               display: 'flex',

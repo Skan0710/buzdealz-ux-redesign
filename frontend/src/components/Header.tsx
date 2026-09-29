@@ -228,14 +228,17 @@ export const Header: React.FC<HeaderProps> = ({
         </nav>
 
         {/* Right: Actions */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          {/* Theme toggle */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {/* Theme toggle (Fitts's law: 44x44px touch target) */}
           <button
             onClick={toggleTheme}
             aria-label="Toggle color theme"
+            className="tap-feedback"
             style={{
-              width: '36px',
-              height: '36px',
+              width: '44px',
+              height: '44px',
+              minWidth: '44px',
+              minHeight: '44px',
               borderRadius: '50%',
               display: 'flex',
               alignItems: 'center',
@@ -246,17 +249,21 @@ export const Header: React.FC<HeaderProps> = ({
               transition: 'all 0.15s ease',
             }}
           >
-            {isDark ? <Sun size={17} /> : <Moon size={17} />}
+            {isDark ? <Sun size={18} /> : <Moon size={18} />}
           </button>
 
-          {/* Wishlist badge */}
+          {/* Wishlist badge (Fitts's law: 44x44px touch target) */}
           <button
             onClick={() => handleNavClick('deals')}
             title="Saved Deals"
+            aria-label={`Saved deals (${savedDealsCount})`}
+            className="tap-feedback"
             style={{
               position: 'relative',
-              width: '36px',
-              height: '36px',
+              width: '44px',
+              height: '44px',
+              minWidth: '44px',
+              minHeight: '44px',
               borderRadius: '50%',
               display: 'flex',
               alignItems: 'center',
@@ -266,13 +273,13 @@ export const Header: React.FC<HeaderProps> = ({
               backgroundColor: 'var(--surface)',
             }}
           >
-            <Heart size={17} />
+            <Heart size={18} />
             {savedDealsCount > 0 && (
               <span
                 style={{
                   position: 'absolute',
-                  top: '-4px',
-                  right: '-4px',
+                  top: '2px',
+                  right: '2px',
                   backgroundColor: 'var(--primary)',
                   color: '#fff',
                   fontSize: '11px',
@@ -293,9 +300,10 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Login button */}
           <button
             onClick={onOpenLoginModal}
-            className="btn-primary"
+            className="btn-primary tap-feedback"
             style={{
-              padding: '9px 20px',
+              padding: '9px 18px',
+              minHeight: '44px',
               fontSize: '0.9rem',
             }}
           >
@@ -303,21 +311,23 @@ export const Header: React.FC<HeaderProps> = ({
             <span>Login</span>
           </button>
 
-          {/* Mobile hamburger */}
+          {/* Mobile hamburger (Fitts's law: 44x44px touch target) */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
+            className="mobile-hamburger tap-feedback"
             style={{
               display: 'none',
-              width: '40px',
-              height: '40px',
-              borderRadius: '10px',
+              width: '44px',
+              height: '44px',
+              minWidth: '44px',
+              minHeight: '44px',
+              borderRadius: '12px',
               alignItems: 'center',
               justifyContent: 'center',
               color: 'var(--foreground)',
               border: '1px solid var(--border)',
             }}
-            className="mobile-hamburger"
           >
             {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
