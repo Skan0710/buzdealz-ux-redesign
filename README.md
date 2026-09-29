@@ -69,11 +69,31 @@ The original BuzDealz identity (Plum `#6b2846`, Berry `#d6336c`, Gold `#f2c572`,
 
 ---
 
-## 📱 Desktop & Mobile Responsiveness
+## 📱 Mobile-First Experience & Responsiveness
 
-The prototype is engineered and tested across:
-- **Desktop**: 1440 × 900 (full multi-column grid, persistent header, interactive sliders, rich hover states)
-- **Mobile**: 390 × 844 (fluid vertical flow, responsive drawer menu, touch-friendly pill selectors, zero horizontal overflow)
+The prototype provides tailored, production-grade experiences across mobile viewports (320px, 375px, 390px, 414px, 430px) as well as desktop (1440 × 900):
+
+### 1. Pre-login Mobile Experience
+- **Minimal Header**: Pure brand focus with BuzDealz Logo and Login CTA, avoiding unnecessary clutter.
+- **Value-Driven Hero**: Punchy value proposition (*"Discover better deals from brands you already love"*) with dual conversion CTAs (*Explore Deals*, *Join BuzDealz*).
+- **Popular Brands**: Horizontal smooth-scrolling carousel showcasing verified brand partners.
+- **Trending Deals Carousel**: Clean horizontal cards prioritizing savings and verified freshness.
+- **Category Chips**: Lightweight 1-tap filtering for Fashion, Beauty, Footwear, and Accessories.
+- **Why BuzDealz**: 4 concise, scannable value pillars (Curated Deals, Premium Brands, Member Benefits, Smart Discovery).
+- **Final Conversion CTA**: High-impact closing banner with member savings proof.
+
+### 2. Personalized Post-login Mobile Home
+- **Time-Aware Greeting**: Dynamic header greeting (*Good morning/afternoon/evening, Alex*).
+- **Prominent Discovery Search**: Immediate search input with quick-launch AI Deal Finder integration.
+- **Deals For You**: Primary personalized feed based on user interests and categories.
+- **Trending Now**: Horizontal carousel with single contextual badges (*Ending Soon*, *Popular*, *Member Exclusive*).
+- **Explore Brands**: Compact partner cards with instant discount tags and *View All*.
+- **Conditional Saved Deals**: Dedicated wishlist tray when items are saved, with sensible empty states.
+
+### 3. Bottom Navigation & Micro-Interactions
+- **Persistent Bottom Navigation**: 5 primary destinations (*Home*, *Discover*, *Categories*, *Saved*, *Profile*) with active indicator pills and dynamic saved count badge.
+- **Fitts's Law Standards**: Minimum 44×44px touch targets across all buttons, chips, and icons.
+- **Micro-Interactions**: Heart pop save animations, active tap scale feedback, smooth carousel momentum, and `prefers-reduced-motion` accessibility support.
 
 ---
 
