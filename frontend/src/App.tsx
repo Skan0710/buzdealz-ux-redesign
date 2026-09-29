@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { HeroSection } from './components/HeroSection';
 import { StatsBar } from './components/StatsBar';
@@ -18,17 +18,30 @@ import { FaqSection } from './components/FaqSection';
 import { CtaBanner } from './components/CtaBanner';
 import { Footer } from './components/Footer';
 import { LoginModal } from './components/LoginModal';
-import type { Deal, Brand } from './data/mockData';
+import { MobilePreLoginHome } from './components/MobilePreLoginHome';
+import { BRANDS, DEALS, type Deal, type Brand } from './data/mockData';
 
 export function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState('Alex');
+  const [isMobile, setIsMobile] = useState(false);
   const [selectedDeal, setSelectedDeal] = useState<Deal | null>(null);
   const [isDealDetailsOpen, setIsDealDetailsOpen] = useState(false);
   const [isRedemptionOpen, setIsRedemptionOpen] = useState(false);
   const [savedDeals, setSavedDeals] = useState<string[]>(['campus-north-plus', 'rare-rabbit-oxford']);
   const [selectedBrandFilter, setSelectedBrandFilter] = useState<string>('All');
   const [notification, setNotification] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const showToast = (msg: string) => {
     setNotification(msg);
@@ -42,7 +55,14 @@ export function App() {
   };
 
   const handleSuccessLogin = () => {
-    showToast('🎉 Welcome to BuzDealz Club! Exclusive member prices unlocked.');
+    setIsLoggedIn(true);
+    setUserName('Alex Sharma');
+    showToast('🎉 Welcome back, Alex! Member discounts unlocked.');
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    showToast('Logged out of BuzDealz');
   };
 
   const handleToggleSave = (dealId: string) => {
@@ -119,69 +139,92 @@ export function App() {
         savedDealsCount={savedDeals.length}
         onOpenLoginModal={() => setIsLoginModalOpen(true)}
         onOpenIntentDiscovery={scrollToIntentDiscovery}
+        isLoggedIn={isLoggedIn}
+        userName={userName}
+        onLogout={handleLogout}
       />
 
       {/* Main Content */}
       <main style={{ flex: 1 }}>
-        <HeroSection
-          onUnlockMember={handleUnlockMember}
-          onExploreDeals={() => {
-            const el = document.getElementById('deals');
-            if (el) el.scrollIntoView({ behavior: 'smooth' });
-          }}
-        />
+        {isMobile && !isLoggedIn ? (
+          <MobilePreLoginHome
+            brands={BRANDS}
+            deals={DEALS}
+            savedDeals={savedDeals}
+            onToggleSave={handleToggleSave}
+            onSelectDeal={handleSelectDeal}
+            onSelectBrand={handleSelectBrand}
+            onExploreDeals={() => {
+              setIsLoginModalOpen(true);
+            }}
+            onJoinBuzDealz={() => setIsLoginModalOpen(true)}
+            onSelectCategory={(cat) => {
+              showToast(`Browsing ${cat} deals`);
+            }}
+          />
+        ) : (
+          <>
+            <HeroSection
+              onUnlockMember={handleUnlockMember}
+              onExploreDeals={() => {
+                const el = document.getElementById('deals');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
+            />
 
-        <StatsBar />
+            <StatsBar />
 
-        <BrandsShowcase
-          onSelectBrand={handleSelectBrand}
-          onViewAllBrands={() => {
-            setSelectedBrandFilter('All');
-            const el = document.getElementById('deals');
-            if (el) el.scrollIntoView({ behavior: 'smooth' });
-          }}
-        />
+            <BrandsShowcase
+              onSelectBrand={handleSelectBrand}
+              onViewAllBrands={() => {
+                setSelectedBrandFilter('All');
+                const el = document.getElementById('deals');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
+            />
 
-        {/* UX IMPROVEMENT 3: Intent-Based Discovery */}
-        <IntentDiscoverySection
-          onSelectDeal={handleSelectDeal}
-          savedDeals={savedDeals}
-          onToggleSave={handleToggleSave}
-        />
+            {/* UX IMPROVEMENT 3: Intent-Based Discovery */}
+            <IntentDiscoverySection
+              onSelectDeal={handleSelectDeal}
+              savedDeals={savedDeals}
+              onToggleSave={handleToggleSave}
+            />
 
-        <HowItWorks />
+            <HowItWorks />
 
-        <FeaturedDealHighlight
-          onSelectDeal={handleSelectDeal}
-          onUnlockMember={handleUnlockMember}
-        />
+            <FeaturedDealHighlight
+              onSelectDeal={handleSelectDeal}
+              onUnlockMember={handleUnlockMember}
+            />
 
-        {/* High-Fidelity Deal Discovery & Listing Section */}
-        <DealListingSection
-          onSelectDeal={handleSelectDeal}
-          savedDeals={savedDeals}
-          onToggleSave={handleToggleSave}
-          initialBrand={selectedBrandFilter}
-        />
+            {/* High-Fidelity Deal Discovery & Listing Section */}
+            <DealListingSection
+              onSelectDeal={handleSelectDeal}
+              savedDeals={savedDeals}
+              onToggleSave={handleToggleSave}
+              initialBrand={selectedBrandFilter}
+            />
 
-        {/* UX IMPROVEMENT 1: Savings and Value Calculator */}
-        <SavingsCalculator onUnlockMember={handleUnlockMember} />
+            {/* UX IMPROVEMENT 1: Savings and Value Calculator */}
+            <SavingsCalculator onUnlockMember={handleUnlockMember} />
 
-        <ComparisonSection />
+            <ComparisonSection />
 
-        <MembershipSection
-          onSelectPlan={(_plan) => {
-            setIsLoginModalOpen(true);
-          }}
-        />
+            <MembershipSection
+              onSelectPlan={(_plan) => {
+                setIsLoginModalOpen(true);
+              }}
+            />
 
-        <MemberPerksGrid />
+            <MemberPerksGrid />
 
-        <WhyAdvantageSection />
+            <WhyAdvantageSection />
 
-        <FaqSection />
+            <FaqSection />
 
-        <CtaBanner onUnlockMember={handleUnlockMember} />
+            <CtaBanner onUnlockMember={handleUnlockMember} />
+          </>
+        )}
       </main>
 
       {/* Footer */}

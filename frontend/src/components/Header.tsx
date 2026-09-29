@@ -7,6 +7,9 @@ interface HeaderProps {
   savedDealsCount: number;
   onOpenLoginModal: () => void;
   onOpenIntentDiscovery?: () => void;
+  isLoggedIn?: boolean;
+  userName?: string;
+  onLogout?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -14,7 +17,10 @@ export const Header: React.FC<HeaderProps> = ({
   setActiveTab,
   savedDealsCount,
   onOpenLoginModal,
-  onOpenIntentDiscovery
+  onOpenIntentDiscovery,
+  isLoggedIn = false,
+  userName = 'Member',
+  onLogout,
 }) => {
   const [isDark, setIsDark] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -297,40 +303,104 @@ export const Header: React.FC<HeaderProps> = ({
             )}
           </button>
 
-          {/* Login button */}
-          <button
-            onClick={onOpenLoginModal}
-            className="btn-primary tap-feedback"
-            style={{
-              padding: '9px 18px',
-              minHeight: '44px',
-              fontSize: '0.9rem',
-            }}
-          >
-            <User size={15} />
-            <span>Login</span>
-          </button>
+          {/* Login / Profile action */}
+          {isLoggedIn ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  backgroundColor: 'var(--primary-light)',
+                  border: '1px solid rgba(214, 51, 108, 0.2)',
+                  borderRadius: 'var(--radius-pill)',
+                  padding: '4px 12px 4px 6px',
+                }}
+              >
+                <div
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '50%',
+                    backgroundColor: 'var(--primary)',
+                    color: '#fff',
+                    fontWeight: 700,
+                    fontSize: '0.82rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  {userName.charAt(0).toUpperCase()}
+                </div>
+                <span
+                  style={{
+                    fontSize: '0.85rem',
+                    fontWeight: 700,
+                    color: 'var(--foreground-heading)',
+                    maxWidth: '80px',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {userName}
+                </span>
+              </div>
+              {onLogout && (
+                <button
+                  onClick={onLogout}
+                  className="tap-feedback"
+                  style={{
+                    fontSize: '0.78rem',
+                    color: 'var(--muted-foreground)',
+                    padding: '6px 8px',
+                    minHeight: '44px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  Log out
+                </button>
+              )}
+            </div>
+          ) : (
+            <button
+              onClick={onOpenLoginModal}
+              className="btn-primary tap-feedback"
+              style={{
+                padding: '9px 18px',
+                minHeight: '44px',
+                fontSize: '0.9rem',
+              }}
+            >
+              <User size={15} />
+              <span>Login</span>
+            </button>
+          )}
 
-          {/* Mobile hamburger (Fitts's law: 44x44px touch target) */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle menu"
-            className="mobile-hamburger tap-feedback"
-            style={{
-              display: 'none',
-              width: '44px',
-              height: '44px',
-              minWidth: '44px',
-              minHeight: '44px',
-              borderRadius: '12px',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'var(--foreground)',
-              border: '1px solid var(--border)',
-            }}
-          >
-            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
-          </button>
+          {/* Mobile hamburger - only shown if desktop nav is needed or logged in */}
+          {isLoggedIn && (
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle menu"
+              className="mobile-hamburger tap-feedback"
+              style={{
+                display: 'none',
+                width: '44px',
+                height: '44px',
+                minWidth: '44px',
+                minHeight: '44px',
+                borderRadius: '12px',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'var(--foreground)',
+                border: '1px solid var(--border)',
+              }}
+            >
+              {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
+          )}
         </div>
       </div>
 
