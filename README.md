@@ -111,18 +111,3 @@ npm run build
 ```
 
 ---
-
-## 📝 GitHub 5-Commit Architecture
-
-1. `feat: reverse engineer and recreate BuzDealz UI`
-2. `feat: build high fidelity deal discovery experience`
-3. `feat: improve savings and deal trust experience`
-4. `feat: add intent discovery and redemption flow`
-5. `feat: polish responsive UX and finalize prototype`
-
----
-
-## ⚠️ Notes & Limitations
-
-- **Authentication & Backend**: In accordance with the prompt guidelines, no backend database or live payment gateway was implemented. The login modal and member unlock flows use realistic mock authentication state.
-- **Brand Redirection**: The redemption handoff links directly to authentic official brand store domains (e.g., `campusshoes.com`, `thehouseofrare.com`, `levi.in`).
