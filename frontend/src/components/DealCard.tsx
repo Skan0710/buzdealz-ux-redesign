@@ -145,7 +145,11 @@ export const DealCard: React.FC<DealCardProps> = ({
           onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.08)')}
           onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
         >
-          <Heart size={18} fill={isSaved ? 'var(--primary)' : 'none'} />
+          <Heart
+            size={18}
+            fill={isSaved ? 'var(--primary)' : 'none'}
+            className={isSaved ? 'animate-heart-pop' : ''}
+          />
         </button>
 
         {/* Brand Tag & Expiry Status Bar */}

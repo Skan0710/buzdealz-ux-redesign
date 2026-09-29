@@ -20,10 +20,12 @@ import { Footer } from './components/Footer';
 import { LoginModal } from './components/LoginModal';
 import { MobilePreLoginHome } from './components/MobilePreLoginHome';
 import { MobilePostLoginHome } from './components/MobilePostLoginHome';
+import { MobileBottomNav, type MobileTab } from './components/MobileBottomNav';
 import { BRANDS, DEALS, type Deal, type Brand } from './data/mockData';
 
 export function App() {
   const [activeTab, setActiveTab] = useState('home');
+  const [mobileTab, setMobileTab] = useState<MobileTab>('home');
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState('Alex');
@@ -103,6 +105,37 @@ export function App() {
   const scrollToIntentDiscovery = () => {
     const el = document.getElementById('intent-discovery');
     if (el) el.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleMobileTabChange = (tab: MobileTab) => {
+    setMobileTab(tab);
+    if (tab === 'home') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (tab === 'discover') {
+      if (!isLoggedIn) {
+        setIsLoginModalOpen(true);
+      } else {
+        const el = document.getElementById('intent-discovery');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+        else showToast('✨ Discovering smart member deals');
+      }
+    } else if (tab === 'categories') {
+      const el = document.getElementById('deals');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+      else showToast('Browse by Categories');
+    } else if (tab === 'saved') {
+      if (savedDeals.length === 0) {
+        showToast('Your saved wishlist is empty. Tap ♡ on any deal to save!');
+      } else {
+        showToast(`❤️ Viewing ${savedDeals.length} saved deals`);
+      }
+    } else if (tab === 'profile') {
+      if (!isLoggedIn) {
+        setIsLoginModalOpen(true);
+      } else {
+        showToast(`👤 Signed in as ${userName} (Gold Club Member)`);
+      }
+    }
   };
 
   return (
@@ -267,6 +300,13 @@ export function App() {
         isOpen={isRedemptionOpen}
         onClose={() => setIsRedemptionOpen(false)}
         onBackToDeal={() => setIsDealDetailsOpen(true)}
+      />
+
+      {/* Mobile Bottom Navigation (Persistent Consumer App Pattern) */}
+      <MobileBottomNav
+        activeTab={mobileTab}
+        onTabChange={handleMobileTabChange}
+        savedCount={savedDeals.length}
       />
     </div>
   );
